@@ -1,14 +1,16 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { opend } from "../../../declarations/opend";
 import { Principal } from "@dfinity/principal";
-import Item from "./Item"; 
+import Item from "./Item";
 
 function Minter() {
   const { register, handleSubmit } = useForm();
   const [nftPrincipal, setNFTPrincipal] = useState("");
+  const [loaderHidden, setLoaderHidden] = useState(true);
 
   async function onSubmit(data) {
+    setLoaderHidden(false);
     const name = data.name;
     const image = data.image[0];
     const imageArray = await image.arrayBuffer();
@@ -17,11 +19,18 @@ function Minter() {
     const newNFTID = await opend.mint(imageByteData, name);
     console.log(newNFTID.toText());
     setNFTPrincipal(newNFTID);
+    setLoaderHidden(true);
   }
 
   if (nftPrincipal == "") {
     return (
       <div className="minter-container">
+        <div hidden={loaderHidden} className="lds-ellipsis">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
         <h3 className="makeStyles-title-99 Typography-h3 form-Typography-gutterBottom">
           Create NFT
         </h3>
