@@ -14,7 +14,6 @@ actor OpenD {
     let owner : Principal = msg.caller;
 
     Debug.print(debug_show (Cycles.balance()));
-
     Cycles.add(100_500_000_000);
     let newNFT = await NFTActorClass.NFT(name, owner, imgData);
     Debug.print(debug_show (Cycles.balance()));
@@ -22,6 +21,7 @@ actor OpenD {
     let newNFTPrincipal = await newNFT.getCanisterId();
 
     mapOfNFTs.put(newNFTPrincipal, newNFT);
+    addToOwnershipMap(owner, newNFTPrincipal);
 
     return newNFTPrincipal;
   };
