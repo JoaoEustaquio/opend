@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { use, useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
 import { BrowserRouter, Link, Switch, Route } from "react-router-dom";
 import homeImage from "../../assets/home-img.png";
@@ -8,9 +8,13 @@ import { opend } from "../../../declarations/opend";
 import CURRENT_USER_ID from "../index";
 
 function Header() {
+
+  const [userOwnedGallery, setOwnedGallery] = useState();
+
   async function getNFTs() {
     const userNFTIds = await opend.getOwnedNFTs(CURRENT_USER_ID);
     console.log(userNFTIds);
+    setOwnedGallery(<Gallery title="MY NFTs" ids={userNFTIds}/>);
   };
 
   useEffect(() => {
@@ -56,7 +60,7 @@ function Header() {
           <Minter />
         </Route>
         <Route path="/collection">
-          <Gallery title="MY NFTs"/>
+          {userOwnedGallery}
         </Route>
       </Switch>
     </BrowserRouter>
