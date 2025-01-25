@@ -35,7 +35,7 @@ function Item(props) {
     setOwner(owner.toText());
     setImage(image);
 
-    setButton(<Button handleClick={handleSell} />);
+    setButton(<Button handleClick={handleSell} text={"Sell"}/>);
   }
 
   useEffect(() => {
@@ -54,6 +54,7 @@ function Item(props) {
         onChange={(e) => price = e.target.value}
       />
     );
+    setButton(<Button handleClick={handleSell} text={"Confirm"}/>);
   }
 
   return (
