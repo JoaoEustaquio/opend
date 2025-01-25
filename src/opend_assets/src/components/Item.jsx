@@ -3,6 +3,7 @@ import logo from "../../assets/logo.png";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { idlFactory } from "../../../declarations/nft";
 import { Principal } from "@dfinity/principal";
+import { opend } from "../../../declarations/opend";  
 import Button from "./Button";
 
 function Item(props) {
@@ -59,6 +60,8 @@ function Item(props) {
 
   async function sellItem() {
     console.log("Set price: " + price);
+    const listingResult = await opend.listItem(props.id, Number(price));
+    console.log("listing: " + listingResult);
   }
 
   return (
