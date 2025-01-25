@@ -1,6 +1,6 @@
 type NFT = 
  service {
-   getImage: () -> (vec nat8) query;
+   getAsset: () -> (vec nat8) query;
    getName: () -> (text) query;
    getOwner: () -> (principal) query;
  };
