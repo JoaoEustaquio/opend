@@ -17,9 +17,11 @@ function Item(props) {
 
   const localHost = "http://localhost:8080";
   const agent = new HttpAgent({ host: localHost });
+  agent.fetchRootKey();
+  let NFTActor;
 
   async function loadNFT() {
-    const NFTActor = await Actor.createActor(idlFactory, {
+    NFTActor = await Actor.createActor(idlFactory, {
       agent,
       canisterId: id,
     });
@@ -62,6 +64,12 @@ function Item(props) {
     console.log("Set price: " + price);
     const listingResult = await opend.listItem(props.id, Number(price));
     console.log("listing: " + listingResult);
+
+    if(listingResult == "Success") {
+      const openDId = await opend.getOpenDCanisterID();
+      const transferResult = await NFTActor.transferOwnership(openDId, true);
+      console.log("Tranfer " + transferResult);
+    }
   }
 
   return (
