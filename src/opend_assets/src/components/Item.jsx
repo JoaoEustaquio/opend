@@ -6,11 +6,12 @@ import { Principal } from "@dfinity/principal";
 import Button from "./Button";
 
 function Item(props) {
-  const [name, setName] = useState(); 
-  const [owner, setOwner] = useState(); 
+  const [name, setName] = useState();
+  const [owner, setOwner] = useState();
   const [image, setImage] = useState();
   const [button, setButton] = useState();
-  
+  const [priceInput, setPriceInput] = useState();
+
   const id = props.id;
 
   const localHost = "http://localhost:8080";
@@ -27,7 +28,7 @@ function Item(props) {
     const imageData = await NFTActor.getAsset();
     const imageContent = new Uint8Array(imageData);
     const image = URL.createObjectURL(
-      new Blob([imageContent.buffer], { type: "image/png"})
+      new Blob([imageContent.buffer], { type: "image/png" })
     );
 
     setName(name);
@@ -41,8 +42,18 @@ function Item(props) {
     loadNFT();
   }, []);
 
+  let price;
   function handleSell() {
-    console.log("Sell Clicked")
+    console.log("Sell Clicked");
+    setPriceInput(
+      <input 
+        placeholder="Price in DANG"
+        type="number"
+        className="price-input"
+        value={price}
+        onChange={(e) => price = e.target.value}
+      />
+    );
   }
 
   return (
@@ -59,6 +70,7 @@ function Item(props) {
           <p className="disTypography-root makeStyles-bodyText-24 disTypography-body2 disTypography-colorTextSecondary">
             Owner: {owner}
           </p>
+          {priceInput}
           {button}
         </div>
       </div>
