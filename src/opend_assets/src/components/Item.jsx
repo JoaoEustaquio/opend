@@ -3,7 +3,7 @@ import logo from "../../assets/logo.png";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import { idlFactory } from "../../../declarations/nft";
 import { Principal } from "@dfinity/principal";
-import { opend } from "../../../declarations/opend";  
+import { opend } from "../../../declarations/opend";
 import Button from "./Button";
 
 function Item(props) {
@@ -12,6 +12,7 @@ function Item(props) {
   const [image, setImage] = useState();
   const [button, setButton] = useState();
   const [priceInput, setPriceInput] = useState();
+  const [loaderHidden, setLoaderHidden] = useState(true);
 
   const id = props.id;
 
@@ -38,7 +39,7 @@ function Item(props) {
     setOwner(owner.toText());
     setImage(image);
 
-    setButton(<Button handleClick={handleSell} text={"Sell"}/>);
+    setButton(<Button handleClick={handleSell} text={"Sell"} />);
   }
 
   useEffect(() => {
@@ -49,26 +50,30 @@ function Item(props) {
   function handleSell() {
     console.log("Sell Clicked");
     setPriceInput(
-      <input 
+      <input
         placeholder="Price in DANG"
         type="number"
         className="price-input"
         value={price}
-        onChange={(e) => price = e.target.value}
+        onChange={(e) => (price = e.target.value)}
       />
     );
-    setButton(<Button handleClick={sellItem} text={"Confirm"}/>);
+    setButton(<Button handleClick={sellItem} text={"Confirm"} />);
   }
 
   async function sellItem() {
+    setLoaderHidden(false);
     console.log("Set price: " + price);
     const listingResult = await opend.listItem(props.id, Number(price));
     console.log("listing: " + listingResult);
 
-    if(listingResult == "Success") {
+    if (listingResult == "Success") {
       const openDId = await opend.getOpenDCanisterID();
       const transferResult = await NFTActor.transferOwnership(openDId, true);
       console.log("Tranfer " + transferResult);
+      if(transferResult == "Success") {
+        setLoaderHidden(true);
+      }
     }
   }
 
@@ -79,6 +84,12 @@ function Item(props) {
           className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"
           src={image}
         />
+        <div className="lds-ellipsis" hidden={loaderHidden}>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
         <div className="disCardContent-root">
           <h2 className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
             {name} <span className="purple-text"></span>
