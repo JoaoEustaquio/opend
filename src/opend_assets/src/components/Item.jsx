@@ -73,6 +73,8 @@ function Item(props) {
       console.log("Tranfer " + transferResult);
       if(transferResult == "Success") {
         setLoaderHidden(true);
+        setButton();
+        setPriceInput();
       }
     }
   }
