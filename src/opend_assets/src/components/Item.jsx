@@ -13,6 +13,7 @@ function Item(props) {
   const [button, setButton] = useState();
   const [priceInput, setPriceInput] = useState();
   const [loaderHidden, setLoaderHidden] = useState(true);
+  const [blur, setBlur] = useState();  
 
   const id = props.id;
 
@@ -39,7 +40,14 @@ function Item(props) {
     setOwner(owner.toText());
     setImage(image);
 
-    setButton(<Button handleClick={handleSell} text={"Sell"} />);
+    const nftIsListed = await opend.isListed(props.id);
+
+    if (nftIsListed) {
+      setOwner("OpenD");
+      setBlur({ filter: "blur(4px)" });
+    } else {
+      setButton(<Button handleClick={handleSell} text={"Sell"} />);
+    }
   }
 
   useEffect(() => {
@@ -63,6 +71,7 @@ function Item(props) {
 
   async function sellItem() {
     setLoaderHidden(false);
+    setBlur({ filter: "blur(4px)" });
     console.log("Set price: " + price);
     const listingResult = await opend.listItem(props.id, Number(price));
     console.log("listing: " + listingResult);
@@ -75,6 +84,7 @@ function Item(props) {
         setLoaderHidden(true);
         setButton();
         setPriceInput();
+        setOwner("OpenD");
       }
     }
   }
@@ -85,6 +95,7 @@ function Item(props) {
         <img
           className="disCardMedia-root makeStyles-image-19 disCardMedia-media disCardMedia-img"
           src={image}
+          style={blur}
         />
         <div className="lds-ellipsis" hidden={loaderHidden}>
           <div></div>
