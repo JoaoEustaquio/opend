@@ -12,7 +12,7 @@ function Item(props) {
   const [image, setImage] = useState();
   const [button, setButton] = useState();
   const [priceInput, setPriceInput] = useState();
-  const [loaderHidden, setLoaderHidden] = useState(true) ;
+  const [loaderHidden, setLoaderHidden] = useState(true);
   const [blur, setBlur] = useState();
   const [sellStatus, setSellStatus] = useState("");
 
@@ -41,14 +41,18 @@ function Item(props) {
     setOwner(owner.toText());
     setImage(image);
 
-    const nftIsListed = await opend.isListed(props.id);
+    if (props.role == "collection") {
+      const nftIsListed = await opend.isListed(props.id);
 
-    if (nftIsListed) {
-      setOwner("OpenD");
-      setBlur({ filter: "blur(4px)" });
-      setSellStatus("Listed");
-    } else {
-      setButton(<Button handleClick={handleSell} text={"Sell"} />);
+      if (nftIsListed) {
+        setOwner("OpenD");
+        setBlur({ filter: "blur(4px)" });
+        setSellStatus("Listed");
+      } else {
+        setButton(<Button handleClick={handleSell} text={"Sell"} />);
+      }
+    } else if (props.role == "discover") {
+      setButton(<Button handleClick={handleBuy} text={"Buy"} />);
     }
   }
 
@@ -92,6 +96,10 @@ function Item(props) {
     }
   }
 
+  async function handleBuy() {
+    console.log("Buy was Triggered");
+  }
+
   return (
     <div className="disGrid-item">
       <div className="disPaper-root disCard-root makeStyles-root-17 disPaper-elevation1 disPaper-rounded">
@@ -108,7 +116,7 @@ function Item(props) {
         </div>
         <div className="disCardContent-root">
           <h2 className="disTypography-root makeStyles-bodyText-24 disTypography-h5 disTypography-gutterBottom">
-            {name} 
+            {name}
             <span className="purple-text"> {sellStatus}</span>
           </h2>
           <p className="disTypography-root makeStyles-bodyText-24 disTypography-body2 disTypography-colorTextSecondary">
